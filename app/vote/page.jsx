@@ -12,9 +12,6 @@ export default function VotePage() {
           <div className="p-5">
             <Vote />
           </div>
-          <div>
-           
-          </div>
         </div>
       </div>
 
