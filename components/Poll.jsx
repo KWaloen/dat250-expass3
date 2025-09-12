@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import Link from "next/link"
 
 export default function Poll() {
 
@@ -17,13 +18,10 @@ export default function Poll() {
         setOption1(option1);
         setOption2(option2);
         setOption3(option3);
-        
-       
-    }
- 
-    
 
-    
+
+    }
+
 
     return (
 
@@ -65,6 +63,11 @@ export default function Poll() {
                     <Button onClick={handleClick}>
                         Submit Poll
                     </Button>
+                    <Link href="/vote">
+                        <Button>
+                            Go vote
+                        </Button>
+                    </Link>
                 </div>
 
             </div>
