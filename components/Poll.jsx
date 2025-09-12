@@ -19,13 +19,61 @@ export default function Poll() {
         setOption2(option2);
         setOption3(option3);
 
-
+        getUserId();
+        createPoll();
     }
+
+    const getUserId = async () => {
+        const res = await fetch("http://localhost:8080/users/allUsers", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to get users")
+        }
+
+        const users = await res.json();
+
+        for (let i=0; i < users.length; i++) {
+            if (localStorage.getItem("username") === users[i].username) {
+                const userId = users[i].userId;
+                localStorage.setItem("userId", userId);
+            }
+        }
+    }
+
+    const createPoll = async () => {
+        const res = await fetch("http://localhost:8080/polls/createPoll", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+            },
+            body: JSON.stringify({
+                question: question,
+                voteOptions: [
+                    {caption: option1, presentationOrder: 1},
+                    {caption: option2, presentationOrder: 2},
+                    {caption: option3, presentationOrder: 3},
+                ], 
+                publishedBy: localStorage.getItem("userId"),
+            })
+        });
+        if (!res.ok) {
+            throw new Error("Create poll failed!")
+        }
+    }
+
 
 
     return (
 
         <div>
+            <div className="pb-5">
+                <p>Hi {localStorage.getItem("username")}!</p>
+            </div>
             <div>
                 Enter Question:
                 <Input

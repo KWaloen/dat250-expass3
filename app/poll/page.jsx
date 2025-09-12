@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button"
-import CreateUser from "@/components/CreateUser"
+import Poll from "@/components/Poll"
 
 export default function Home() {
   return (
@@ -10,7 +10,7 @@ export default function Home() {
         <div className="text-black text-center">
           Poll machine!
           <div className="p-5">
-            <CreateUser />
+            <Poll />
           </div>
         </div>
       </div>
