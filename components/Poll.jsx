@@ -2,16 +2,21 @@
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 
 export default function Poll() {
-
 
     const [question, setQuestion] = useState("");
     const [option1, setOption1] = useState("");
     const [option2, setOption2] = useState("");
     const [option3, setOption3] = useState("");
+    const [username, setUsername] = useState("");
+    
+    useEffect(() => {
+        const username = localStorage.getItem("username");
+        setUsername(username);
+    }, []);
 
     const handleClick = () => {
         setQuestion(question);
@@ -61,6 +66,9 @@ export default function Poll() {
                 publishedBy: localStorage.getItem("userId"),
             })
         });
+        alert("Poll Submitted!");
+        window.location.reload();
+
         if (!res.ok) {
             throw new Error("Create poll failed!")
         }
@@ -72,7 +80,7 @@ export default function Poll() {
 
         <div>
             <div className="pb-5">
-                <p>Hi {localStorage.getItem("username")}!</p>
+                <p>Hi {username}!</p>
             </div>
             <div>
                 Enter Question:
