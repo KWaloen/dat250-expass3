@@ -38,6 +38,8 @@ export default function Poll() {
         getAllPolls();
     }, [])
 
+    
+
     const addUpVotes = async () => {
 
         const res = await fetch("http://localhost:8080/votes/allVotes", {
@@ -56,11 +58,12 @@ export default function Poll() {
         const allCounts = {};
         for (let i = 0; i < allPolls.length; i++) {
             const countingPollId = allPolls[i].pollId;
+            const voter = allPolls[i].userId;
             
             allCounts[countingPollId] = {};
 
             for (let j = 0; j < votes.length; j++) {
-                if (votes[j].pollId === countingPollId) {
+                if (votes[j].pollId === countingPollId ) {
                     allCounts[countingPollId][votes[j].voteOptionId] = (allCounts[countingPollId][votes[j].voteOptionId] || 0) + 1;
                 }
             }
@@ -110,7 +113,7 @@ export default function Poll() {
                                     VOTE
                                 </Button>
 
-                                <p>{voteCount[poll.pollId]?.[option.voteOptionId] ?? 0}</p>
+                                <p>{voteCount[poll.pollId]?.[option.voteOptionId] ?? ""}</p>
                             </div>
                         ))}
                     </div>
