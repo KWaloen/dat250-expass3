@@ -9,7 +9,8 @@ export default function Poll() {
     const router = useRouter();
     const [allPolls, setAllPolls] = useState([]);
     const [userId, setUserId] = useState();
-    const [pollId, setPollId] = useState();
+    const [voteCount, setVoteCount] = useState({});
+
 
     useEffect(() => {
         const userId = localStorage.getItem("userId");
@@ -38,13 +39,33 @@ export default function Poll() {
     }, [])
 
     const addUpVotes = async () => {
-        
+
         const res = await fetch("http://localhost:8080/votes/allVotes", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to get votes")
+        }
+
+        const votes = await res.json();
+
+        const allCounts = {};
+        for (let i = 0; i < allPolls.length; i++) {
+            const countingPollId = allPolls[i].pollId;
+            
+            allCounts[countingPollId] = {};
+
+            for (let j = 0; j < votes.length; j++) {
+                if (votes[j].pollId === countingPollId) {
+                    allCounts[countingPollId][votes[j].voteOptionId] = (allCounts[countingPollId][votes[j].voteOptionId] || 0) + 1;
+                }
             }
-        })
+        }
+        setVoteCount(allCounts);
     }
 
     const handleVote = async (pollId, voteOptionId) => {
@@ -60,6 +81,8 @@ export default function Poll() {
                 voteOptionId: voteOptionId,
             })
         });
+        alert("Vote Submitted!");
+        await addUpVotes();
 
         if (!res.ok) {
             throw new Error("Cast vote failed")
@@ -75,18 +98,19 @@ export default function Poll() {
 
             {allPolls.map(poll => (
                 <div key={poll.pollId} className="border-2 border-solid mb-2">
-                    <div  className="p-5">
+                    <div className="p-5">
                         {poll.question}
                     </div>
                     <div className="p-5">
                         {poll.voteOptions.map((option) => (
                             <div className="flex items-center justify-between" key={option.voteOptionId}>
                                 {option.caption}
-                                
-                                <Button onClick={()=>handleVote(poll.pollId, option.voteOptionId)}>
+
+                                <Button onClick={() => handleVote(poll.pollId, option.voteOptionId)}>
                                     VOTE
                                 </Button>
-                               
+
+                                <p>{voteCount[poll.pollId]?.[option.voteOptionId] ?? 0}</p>
                             </div>
                         ))}
                     </div>
